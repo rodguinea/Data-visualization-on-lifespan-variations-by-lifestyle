@@ -1,0 +1,202 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://unpkg.com/vue@3.0.2"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.21/lodash.min.js" integrity="sha512-WFN04846sdKMIP5LKNphMaWzU7YpMyCU245etK3g/2ARYbPK9Ub18eG+ljU96qKRCWh+quCY7yefSmlkQw1ANQ==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.6.0/gsap.min.js"></script>
+    <style>
+
+.list-enter-from{
+    opacity: 0;
+}
+
+.list-enter-to{
+    opacity: 1;
+}
+
+.list-enter-active{
+    transition: all 1.5s ease-in;    
+}
+
+.barplots{
+    opacity: 0.7;
+}
+
+.button {
+ appearance: none;
+ outline: none;
+ border: none;
+ background: none;
+ cursor: pointer;
+ 
+ display: inline-block;
+ padding: 15px 25px;
+ background-image: linear-gradient(to right, #4753c7, #1d2730);
+ border-radius: 8px;
+ 
+ color: #FFF;
+ font-size: 18px;
+ font-weight: 300;
+ 
+ box-shadow: 3px 3px rgba(0, 0, 0, 0.4);
+ transition: 0.4s ease-out;
+}
+
+.modal-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 98;
+    background-color: rgba(0, 0, 0, 0.3);
+}
+
+.modal {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 99;
+    
+    width: 100%;
+    max-width: 500px;
+    background-color: #FFF;
+    border-radius: 16px;
+    
+    padding: 15px;
+    font-family: 'montserrat', sans-serif;
+}
+
+.fade-enter-active,
+.fade-leave-active {
+ transition: opacity .5s;
+}
+
+.fade-enter-from,
+.fade-leave-to {
+    opacity: 0;
+}
+
+.slide-enter-active,
+.slide-leave-active {
+ transition: transform .5s;
+}
+
+.slide-enter-from,
+.slide-leave-to {
+ transform: translateY(-50%) translateX(100vw);
+}
+
+    </style> 
+</head>
+<body>
+
+    <div id="app"> 
+
+        <svg :style = "{width: x_dim, height: y_dim}">
+
+            <defs>
+                <marker id="arrowhead" viewBox="0 0 10 10" refX="3" refY="5" markerUnits="strokeWidth" markerWidth="2.2" markerHeight="3" orient="auto">
+                  <path d="M 0 0 L 10 5 L 0 10 z" stroke="none" fill="#464d73"/>
+                </marker>
+            </defs>
+
+            <transition-group tag="g" name = "list" class="barplots" appear> 
+            <g v-for="(study, index) in orderJSON" :key="index" :class = "'barplot'+ (index + 1)">
+
+                <path :name="'barplotM'+ index" :d = "barplotMale(x_center,
+                            y_center,
+                            index,
+                            maxAge,
+                            study)"  @click="showWindow($event, study)" @mouseover="opacitiesEvent($event, (index+1))" :style="{ fill: '#296cf2', opacity: opacities[index] }"></path>
+
+                <path :name="'barplotF'+ index" :d = "barplotFemale(x_center,
+                            y_center,
+                            index,
+                            maxAge,
+                            study)" @click="showWindow($event, study)" @mouseover="opacitiesEvent($event, (index+1))" :style="{ fill: '#f23558', opacity: opacities[index] }"></path>
+                
+            <text 
+            :name="'text'+ index"
+            :style="{fontSize: Math.round(rMin*0.3)}"
+            :x="barH(maxAge, radii(auNum(index+1).aun).rn, max(study.years_male, study.years_female), index+1).xLife" 
+            :y="barH(maxAge, radii(auNum(index+1).aun).rn, max(study.years_male, study.years_female), index+1).yLife"
+            text-anchor="start" 
+            dominant-baseline="central"
+            :transform="'rotate(' +  textAngle(index+1, sum) + ',' + 
+            barH(maxAge, radii(auNum(index+1).aun).rn, max(study.years_male, study.years_female), index+1).xLife + ',' + 
+            barH(maxAge, radii(auNum(index+1).aun).rn, max(study.years_male, study.years_female), index+1).yLife + ')'">
+            {{study.variable}}
+            </text>
+        </g>
+        </transition-group>
+
+        <!-- Arc 4 -->
+            <path :d = "drawLine(x_center, y_center, endPts(3, oxyPoints(radii(8).rn).oxn, y_center).pnx, endPts(3, oxyPoints(radii(8).rn).oxn, y_center).pny)" 
+                style="fill:none;stroke:#7686a6;stroke-linecap:round;stroke-miterlimit:10;stroke-width:0.877245876735391px"/>
+            <path :d = "drawLine(x_center, y_center, endPts(4, oxyPoints(radii(8).rn).oxn, y_center).pnx, endPts(4, oxyPoints(radii(8).rn).oxn, y_center).pny)" 
+                        style="fill:none;stroke:#7686a6;stroke-linecap:round;stroke-miterlimit:10;stroke-width:0.877245876735391px"/>
+
+            <path :d = "describeArc(x_center, y_center, radii(8).rn,anglePos(4).an, anglePos(3).an)"
+                        style="fill:none;stroke:#464d73;stroke-linecap:round;stroke-miterlimit:10;stroke-width:5.84832084419727px" marker-end="url(#arrowhead)"/>
+
+        <!-- Arc 3 -->
+            <path :d = "drawLine(x_center, y_center, endPts(3, oxyPoints(radii(5).rn).oxn, y_center).pnx, endPts(3, oxyPoints(radii(5).rn).oxn, y_center).pny)" 
+                        style="fill:none;stroke:#7686a6;stroke-linecap:round;stroke-miterlimit:10;stroke-width:0.877245876735391px"/>
+            <path :d = "drawLine(x_center, y_center, endPts(2, oxyPoints(radii(5).rn).oxn, y_center).pnx, endPts(2, oxyPoints(radii(5).rn).oxn, y_center).pny)" 
+                        style="fill:none;stroke:#7686a6;stroke-linecap:round;stroke-miterlimit:10;stroke-width:0.877245876735391px"/>  
+            
+            <path :d = "describeArc(x_center, y_center, radii(5).rn,anglePos(3).an, anglePos(2).an)"
+                        style="fill:none;stroke:#464d73;stroke-linecap:round;stroke-miterlimit:10;stroke-width:5.84832084419727px" marker-end="url(#arrowhead)"/>
+
+        <!-- Arc 2 -->
+            <path :d = "drawLine(x_center, y_center, endPts(2, oxyPoints(radii(3).rn).oxn, y_center).pnx, endPts(2, oxyPoints(radii(3).rn).oxn, y_center).pny)" 
+                        style="fill:none;stroke:#7686a6;stroke-linecap:round;stroke-miterlimit:10;stroke-width:0.877245876735391px"/>
+            <path :d = "drawLine(x_center, y_center, endPts(1, oxyPoints(radii(3).rn).oxn, y_center).pnx, endPts(1, oxyPoints(radii(3).rn).oxn, y_center).pny)" 
+                        style="fill:none;stroke:#7686a6;stroke-linecap:round;stroke-miterlimit:10;stroke-width:0.877245876735391px"/>
+            
+            <path :d = "describeArc(x_center, y_center, radii(3).rn,anglePos(2).an, anglePos(1).an)"
+                        style="fill:none;stroke:#464d73;stroke-linecap:round;stroke-miterlimit:10;stroke-width:5.84832084419727px" marker-end="url(#arrowhead)"/>
+
+        <!-- Arc 1 -->
+            <path :d = "drawLine(x_center, y_center, endPts(1, oxyPoints(radii(2).rn).oxn, y_center).pnx, endPts(1, oxyPoints(radii(2).rn).oxn, y_center).pny)" 
+                        style="fill:none;stroke:#7686a6;stroke-linecap:round;stroke-miterlimit:10;stroke-width:0.877245876735391px"/>
+            
+            <path :d = "describeArc(x_center, y_center, radii(2).rn,anglePos(1).an, anglePos(4).an)"
+                        style="fill:none;stroke:#464d73;stroke-linecap:round;stroke-miterlimit:10;stroke-width:5.84832084419727px" marker-end="url(#arrowhead)"/>
+            
+            <circle :cx="x_center" :cy="y_center" :r="rMin/2"  style="fill:none;stroke:#7686a6;stroke-miterlimit:10;stroke-width:3.46238875389099px"/>
+            
+        </svg>
+
+        <transition name="fade" appear>
+            <div class="modal-overlay" v-if="showModal" @click="showModal = false"></div>
+           </transition>
+           <transition name="slide" appear>
+            <div class="modal" v-if="showModal">
+             <h1 :style="{color: '#222', fontSize: Math.round(rMin/2) + 'px', fontWeight: '900', marginBottom: '15px'}">{{studyTitle}}</h1>
+             <p><b>Scientific support:</b> {{studySupport}}</p>
+             <p><b>Years gained male:</b> {{yearsGainedMale}}</p>
+             <p><b>Years gained female:</b> {{yearsGainedFemale}}</p>
+             <p><b>Source:</b> {{source}}</p>
+             <p><b>Url:</b> {{url}}</p>
+             <p><b>Note:</b> {{note}}</p>
+             <p><b>Aditional information:</b> {{additionalInformation}}</p>
+             <button class="button" @click="showModal = false">
+              Return
+             </button>
+            </div>
+        </transition>
+    </div>
+
+<script src="app.js"></script>
+</body>
+</html>
+
+
+
+
