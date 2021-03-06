@@ -414,13 +414,13 @@ const app = Vue.createApp({
         varPts(rs, idStudy, ri){ 
         /* Return three points in the arc that corresponds to idStudy: (p1x,p1y) and (p2x,p2y) for an angle of varArc without considering the padding pad*/
             
-            var pad = (2*Math.PI/this.sum)*0.10
-            var varArc = (2*Math.PI/this.sum)
-            var oy = this.y_center
-            var totArc1 = (varArc)*(idStudy) 
-            var totArc2 = (varArc)*(idStudy-1) + pad
+            let pad = (2*Math.PI/this.sum)*0.10
+            let varArc = (2*Math.PI/this.sum)
+            let oy = this.y_center
+            let totArc1 = (varArc)*(idStudy) 
+            let totArc2 = (varArc)*(idStudy-1) + pad
 
-            var semiArc = (totArc1 + totArc2)/2
+            let semiArc = (totArc1 + totArc2)/2
 
             if(ri==0){
                 oxn = this.x_center + rs
@@ -428,14 +428,14 @@ const app = Vue.createApp({
                 oxn = this.x_center + rs + ri
             }
 
-                var x1 = +Math.cos(totArc1) * (oxn-this.x_center) - Math.sin(totArc1) * (oy-this.y_center) + this.x_center
-                var y1 = -Math.sin(totArc1) * (oxn-this.x_center) - Math.cos(totArc1) * (oy-this.y_center) + this.y_center
+                let x1 = +Math.cos(totArc1) * (oxn-this.x_center) - Math.sin(totArc1) * (oy-this.y_center) + this.x_center
+                let y1 = -Math.sin(totArc1) * (oxn-this.x_center) - Math.cos(totArc1) * (oy-this.y_center) + this.y_center
 
-                var x2 = +Math.cos(totArc2) * (oxn-this.x_center) - Math.sin(totArc2) * (oy-this.y_center) + this.x_center
-                var y2 = -Math.sin(totArc2) * (oxn-this.x_center) - Math.cos(totArc2) * (oy-this.y_center) + this.y_center
+                let x2 = +Math.cos(totArc2) * (oxn-this.x_center) - Math.sin(totArc2) * (oy-this.y_center) + this.x_center
+                let y2 = -Math.sin(totArc2) * (oxn-this.x_center) - Math.cos(totArc2) * (oy-this.y_center) + this.y_center
  
-                var mx = +Math.cos(semiArc) * (oxn-this.x_center) - Math.sin(semiArc) * (oy-this.y_center) + this.x_center
-                var my = -Math.sin(semiArc) * (oxn-this.x_center) - Math.cos(semiArc) * (oy-this.y_center) + this.y_center
+                let mx = +Math.cos(semiArc) * (oxn-this.x_center) - Math.sin(semiArc) * (oy-this.y_center) + this.x_center
+                let my = -Math.sin(semiArc) * (oxn-this.x_center) - Math.cos(semiArc) * (oy-this.y_center) + this.y_center
 
             return{
                 p1x: x1,
@@ -512,7 +512,7 @@ const app = Vue.createApp({
             }
         },
         polarToCartesian(centerX, centerY, radius, angleInDegrees) {
-          var angleInRadians = (angleInDegrees);
+          let angleInRadians = (angleInDegrees);
 
           return {
             x: centerX + (radius * Math.cos(angleInRadians)),
@@ -521,12 +521,12 @@ const app = Vue.createApp({
         },
         describeArc(x, y, radius, startAngle, endAngle){
 
-          var start = this.polarToCartesian(x, y, radius, endAngle);
-          var end = this.polarToCartesian(x, y, radius, startAngle);
+          let start = this.polarToCartesian(x, y, radius, endAngle);
+          let end = this.polarToCartesian(x, y, radius, startAngle);
 
-          var arcSweep = endAngle - startAngle <= Math.PI ? "0" : "1";
+          let arcSweep = endAngle - startAngle <= Math.PI ? "0" : "1";
 
-          var d = [
+          let d = [
               "M", end.x, end.y, 
               "A", radius, radius, 0, arcSweep, 0, start.x, start.y
           ].join(" ")
@@ -534,7 +534,7 @@ const app = Vue.createApp({
         },
         textAngle(el, sum){
 
-            var res = 2*Math.PI/sum * (el) - Math.PI/sum
+            let res = 2*Math.PI/sum * (el) - Math.PI/sum
 
             return -res*180/(Math.PI)
         },
@@ -545,27 +545,27 @@ const app = Vue.createApp({
             }
         },
         barH(maxVar, Rs, lifeVar, idStudy){
-                var ss = Rs - this.rMin/2
-                var h = (ss/maxVar)*lifeVar
+                let ss = Rs - this.rMin/2
+                let h = (ss/maxVar)*lifeVar
 
-                var mx = this.varPts(this.radii(this.auNum(idStudy).aun).rn, idStudy,0).midx
-                var my = this.varPts(this.radii(this.auNum(idStudy).aun).rn, idStudy,0).midy
+                let mx = this.varPts(this.radii(this.auNum(idStudy).aun).rn, idStudy,0).midx
+                let my = this.varPts(this.radii(this.auNum(idStudy).aun).rn, idStudy,0).midy
 
-                    var dx = mx - this.x_center 
-                    var dy = my - this.y_center
-                    var dist = Math.sqrt(Math.pow(dx,2) + Math.pow(dy,2))
+                    let dx = mx - this.x_center 
+                    let dy = my - this.y_center
+                    let dist = Math.sqrt(Math.pow(dx,2) + Math.pow(dy,2))
 
-                var ux = dx/dist
-                var uy = dy/dist
+                let ux = dx/dist
+                let uy = dy/dist
 
-                var xL = mx + ux*h
-                var yL = my + uy*h
+                let xL = mx + ux*h
+                let yL = my + uy*h
 
-                var lptx = this.varPts(this.radii(this.auNum(idStudy).aun).rn, idStudy,0).p1x + ux*h
-                var lpty = this.varPts(this.radii(this.auNum(idStudy).aun).rn, idStudy,0).p1y + uy*h
+                let lptx = this.varPts(this.radii(this.auNum(idStudy).aun).rn, idStudy,0).p1x + ux*h
+                let lpty = this.varPts(this.radii(this.auNum(idStudy).aun).rn, idStudy,0).p1y + uy*h
 
-                var rptx = this.varPts(this.radii(this.auNum(idStudy).aun).rn, idStudy,0).p2x + ux*h
-                var rpty = this.varPts(this.radii(this.auNum(idStudy).aun).rn, idStudy,0).p2y + uy*h
+                let rptx = this.varPts(this.radii(this.auNum(idStudy).aun).rn, idStudy,0).p2x + ux*h
+                let rpty = this.varPts(this.radii(this.auNum(idStudy).aun).rn, idStudy,0).p2y + uy*h
 
             return{
                 xLife: xL,
@@ -579,13 +579,13 @@ const app = Vue.createApp({
             }
         },
         radiiGen(maxVar, Rs, lifeVar){
-            var ss = Rs - this.rMin/2
+            let ss = Rs - this.rMin/2
             return{
                 ri: (ss/maxVar)*lifeVar
             }
         },
         drawLine(x1,y1,x2,y2){
-        var d = [
+        let d = [
               "M", x1,y1, 
               "L", x2,y2,
           ].join(" ")
@@ -645,11 +645,11 @@ const app = Vue.createApp({
         },
         getAngle(idStudy){
 
-            var pad = (2*Math.PI/this.sum)*0.10
-            var varArc = (2*Math.PI/this.sum)
-            var oy = this.y_center
-            var totArc1 = (varArc)*(idStudy) 
-            var totArc2 = (varArc)*(idStudy-1) + pad
+            let pad = (2*Math.PI/this.sum)*0.10
+            let varArc = (2*Math.PI/this.sum)
+            let oy = this.y_center
+            let totArc1 = (varArc)*(idStudy) 
+            let totArc2 = (varArc)*(idStudy-1) + pad
 
             return{
                 af: totArc1,
@@ -658,10 +658,10 @@ const app = Vue.createApp({
             }
         },
         arrayOfOrderedOpacities(){
-            var data = [];
+            let data = [];
             var length = this.orderJSON.length; // user defined length
 
-            for(var i = 0; i < length; i++) {
+            for(let i = 0; i < length; i++) {
                 data.push(this.initOpacity);
             }
 
@@ -691,11 +691,11 @@ const app = Vue.createApp({
             return _.orderBy(this.studies, ['scientific_support_level', 'control_level'], ['desc', 'asc']);
         },
         countByCat(){
-            var studies = this.studies || []
-            var buff = {g1: 0, g2: 0, g3: 0, g4: 0}
+            let studies = this.studies || []
+            let buff = {g1: 0, g2: 0, g3: 0, g4: 0}
             
             for(study in studies){
-                var key = studies[study].scientific_support_level
+                let key = studies[study].scientific_support_level
                 buff['g' + key] = buff['g' + key] + 1
             }
             return buff

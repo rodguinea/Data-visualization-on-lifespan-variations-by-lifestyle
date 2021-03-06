@@ -127,9 +127,9 @@
             :y="barH(maxAge, radii(auNum(index+1).aun).rn, max(study.years_male, study.years_female), index+1).yLife"
             text-anchor="start" 
             dominant-baseline="central"
-            :transform="'rotate(' +  textAngle(index+1, sum) + ',' + 
-            barH(maxAge, radii(auNum(index+1).aun).rn, max(study.years_male, study.years_female), index+1).xLife + ',' + 
-            barH(maxAge, radii(auNum(index+1).aun).rn, max(study.years_male, study.years_female), index+1).yLife + ')'">
+            :transform="`rotate(${textAngle(index+1, sum)}, 
+            ${barH(maxAge, radii(auNum(index+1).aun).rn, max(study.years_male, study.years_female), index+1).xLife}, 
+            ${barH(maxAge, radii(auNum(index+1).aun).rn, max(study.years_male, study.years_female), index+1).yLife})`">
             {{study.variable}}
             </text>
         </g>
